@@ -1,4 +1,4 @@
-# NorenApi
+# TradesmartApi
 
 Api used to connect to NorenOMS
 ****
