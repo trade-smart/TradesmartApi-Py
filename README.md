@@ -22,7 +22,6 @@ Symbols
 - [get_security_info](#md-get_security_info)
 - [get_quotes](#md-get_quotes)
 - [get_time_price_series](#md-get_time_price_series)
-- [get_daily_price_series](#md-get_daily_price_series)
 - [get_option_chain](#md-get_optionchain)
 
 Orders and Trades
@@ -30,7 +29,6 @@ Orders and Trades
 - [modify_order](#md-modify_order)
 - [cancel_order](#md-cancel_order)
 - [exit_order](#md-exit_order)
-- [product_convertion](#md-prd_convert)
 - [get_orderbook](#md-get_orderbook)
 - [get_tradebook](#md-get_tradebook)
 - [get_singleorderhistory](#md-get_singleorderhistory)
@@ -39,10 +37,6 @@ Holdings and Limits
 - [get_holdings](#md-get_holdings)
 - [get_positions](#md-get_positions)
 - [get_limits](#md-get_limits)
-
-Calculators
-- [span_calculator](#md-span_calculator)
-- [get_option_greek](#md-get_option_greek)
 
 Websocket API
 - [start_websocket](#md-start_websocket)
@@ -350,55 +344,6 @@ Response data will be in json format with below fields.
 |request_time||Response received time.|
 |emsg||This will be present only if Order cancelation fails|
 
-
-#### <a name="md-prd_convert"></a> position_product_conversion(exchange, tradingsymbol, quantity, new_product_type, previous_product_type, buy_or_sell, day_or_cf)
-
-Convert a product of a position 
-
-Example:
-
-```
-ret = api.get_positions()
-#converts the first position from existing product to intraday
-p = ret[0]
-ret = api.position_product_conversion(p['exch'], p['tsym'], p['netqty'], 'I', p['prd'], 'B', 'DAY')
-```
-
-Request Details :
-
-|Json Fields|Possible value|Description|
-| --- | --- | ---|
-|exch*||Exchange|
-|tsym*||Unique id of contract on which order was placed. Can’t be modified, must be the same as that of original order. (use url encoding to avoid special char error for symbols like M&M)|
-|qty*||Quantity to be converted.|
-|uid*||User id of the logged in user.|
-|actid*||Account id|
-|prd*||Product to which the user wants to convert position. |
-|prevprd*||Original product of the position.|
-|trantype*||Transaction type|
-|postype*|Day / CF|Converting Day or Carry forward position|
-|ordersource|MOB |For Logging|
-
-Response Details :
-
-Response data will be in json format with below fields.
-
-|Json Fields|Possible value|Description|
-| --- | --- | ---|
-|stat|Ok or Not_Ok|Position conversion success or failure indication.|
-|emsg||This will be present only if Position conversion fails.|
-
-Sample Success Response :
-{
-   "request_time":"10:52:12 02-06-2020",
-   "stat":"Ok"
-}
-
-Sample Failure Response :
-{
-   "stat":"Not_Ok",
-   "emsg":"Invalid Input :  Invalid Position Type"
-}
 
 #### <a name="md-get_orderbook"></a>  Order Book
 List of Orders placed for the account
@@ -1179,125 +1124,6 @@ Sample Failure Response :
 }
 Market Info
 
-
-#### <a name="md-span_calculator"></a> span_calculator(actid,positionlist)
-This calculates the margin requirement for a list of input positions.
-
-Example: 
-
-```
-ret = api.span_calculator(actid,positionlist)
-```
-Request Details :
-
-|Json Fields|Possible value|Description|
-| --- | --- | ---|
-|actid*||Any Account id, preferably actual account id if sending from post login screen.|
-|pos*||Array of json objects. (object fields given in below table)|
-
-Position structure as follows:
-
-|Json Fields|Possible value|Description|
-| --- | --- | ---|
-| prd | C / M / H  | Product | 
-|exch|NFO, CDS, MCX ...|Exchange|
-|instname|FUTSTK, FUTIDX, OPTSTK, FUTCUR...|Instrument name|
-|symname|USDINR, ACC, ABB,NIFTY.. |Symbol name|
-|exd|29-DEC-2022|DD-MMM-YYYY format|
-|optt|CE, PE|Option Type|
-|strprc|11900.00, 71.0025|Strike price|
-|buyqty||Buy Open Quantity|
-|sellqty||Sell Open Quantity|
-|netqty||Net traded quantity|
-
-
-Response Details :
-
-
-|Json Fields|Possible value|Description|
-| --- | --- | ---|
-|stat|Ok or Not_Ok|Market watch success or failure indication.|
-|span||Span value |
-|expo||IExposure margin|
-|span_trade||Span value ignoring input fields buyqty, sellqty|
-|expo_trade||Exposure margin ignoring input fields buyqty, sellqty|
-
-Sample Success Response :
-{
-    "request_time": "11:01:59 25-11-2022",
-    "stat": "Ok",
-    "span": "19416.00",
-    "expo": "4338.34",
-    "span_trade": "19416.00",
-    "expo_trade": "4338.34"
-}
-
-
-#### <a name="md-get_option_greek"></a>get_option_greek(expiredate,StrikePrice,SpotPrice,InitRate,Volatility,OptionType)
-Options greeeks computed the delta, thetha, vega , rho values.
-
-Example: 
-
-```
-ret = api.option_greek(expiredate ='24-NOV-2022',StrikePrice='150',SpotPrice  = '200',InitRate  = '100',Volatility = '10',OptionType='CE')
-```
-Request Details :
-
-|Json Fields|Possible value|Description|
-| --- | --- | ---|
-|exd*||Expiry Date|
-|strprc*||Strike Price |
-|sptprc*||Spot Price|
-|int_rate*||Init Rate|
-|volatility*||Volatility|
-|optt|CE or PE|Option Type|
-
-Response Details :
-
-
-|Json Fields|Possible value|Description|
-| --- | --- | ---|
-|stat|Ok or Not_Ok|success or failure indication.|
-|request_time||This will be present only in a successful response.|
-|cal_price||Cal Price|
-|put_price||Put Price|
-|cal_delta||Cal Delta|
-|put_delta||Put Delta|
-|cal_gamma||Cal Gamma|
-|put_gamma||Put Gamma|
-|cal_theta||Cal Theta|
-|put_theta||Put Theta|
-|cal_delta||Cal Delta|
-|cal_rho||Cal Rho|
-|put_rho||Put Rho|
-|cal_vego||Cal Vego|
-|put_vego||Put Vego|
-
-Sample Success Response :
- {
-"request_time":"17:22:58 28-07-2021",
-"stat":"OK",
-"cal_price":"1441",
-"put_price":"0.417071",
-"cal_delta":"0.997304",
-"put_delta":"-0.002696",
-"cal_gamma":"0.000001",
-"put_gamma":"0.000001",
-"cal_theta":"-31.535015",
-"put_theta":"-31.401346",
-"cal_rho":"0.000119",
-"put_rho":"-0.016590",
-"cal_vego":"0.006307",
-put_vego":"0.006307"
-  }
-
-Sample Failure Response :
-{
- "stat":"Not_Ok",
- "emsg":"Invalid Input :  jData is Missing."
-}
-
-
 #### <a name="md-searchscrip"></a> searchscrip(exchange, searchtext):
 Search for scrip or contract and its properties  
 
@@ -1854,65 +1680,6 @@ Sample Failure Response :
      "stat":"Not_Ok",
      "emsg":"Session Expired : Invalid Session Key"
 }
-
-#### <a name="md-get_daily_price_series"></a>get_daily_price_series(Symbol name, From date, To date):
-gets the chart date for the symbol
-
-Example:
-```
-ret =api.get_daily_price_series(exchange="NSE",tradingsymbol="PAYTM-EQ",startdate="457401600",enddate="480556800")
-```
-Request Details :
-
-|Json Fields|Possible value|Description|
-| --- | --- | ---|
-|sym*||Symbol name|
-|from*||From date|
-|to*||To date |
-
-Response Details :
-
-|Json Fields|Possible value|Description|
-| --- | --- | ---|
-|stat|Ok|TPData success indication.|
-|time||DD/MM/CCYY hh:mm:ss|
-|into||Interval open|
-|inth||Interval high|
-|intl||Interval low|
-|intc||Interval close|
-|ssboe||Date,Seconds in 1970 format|
-|intv||Interval volume|
-
-Sample Success Response :
-[
-  "{
-       \"time\":\"21-SEP-2022\",
-       \"into\":\"2496.75\",
-       \"inth\":\"2533.00\",
-       \"intl\":\"2495.00\", 
-       \"intc\":\"2509.75\",
-       \"ssboe\":\"1663718400\",
-       \"intv\":\"4249172.00\"
-   }",
- "{
-       \"time\":\"15-SEP-2022\",
-       \"into\":\"2583.00\",
-       \"inth\":\"2603.55\",
-       \"intl\":\"2556.75\",
-       \"intc\":\"2562.70\", 
-       \"ssboe\":\"1663200000\",
-       \"intv\":\"4783723.00\"
-  }",
- "{ 	
-       \"time\":\"28-JUN-2021\",
-       \"into\":\"2122.00\",
-       \"inth\":\"2126.50\", 
-       \"intl\":\"2081.00\", 
-       \"intc\":\"2086.00\", 
-       \"ssboe\":\"1624838400\",
-        \"intv\":\"9357852.00\"
-  }"
-]
 
 #### <a name="md-get_optionchain"></a> get_option_chain(exchange, tradingsymbol, strikeprice, count):
 
