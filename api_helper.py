@@ -39,10 +39,9 @@ def get_time(time_string):
 
 class NorenApiPy(NorenApi):
     def __init__(self):
-        #for UAT
-        NorenApi.__init__(self, host='https://kambala-uat.tradesmartonline.in/NorenWClientTP/', websocket='wss://kambala-uat.tradesmartonline.in/NorenWSTP/')
-        #for live server 
-        #NorenApi.__init__(self,host='https://noren-trade.tradesmartonline.in/NorenWClientTP/' , websocket='wss://noren-trade.tradesmartonline.in/NorenWSTP/')
+        #for Live server
+        NorenApi.__init__(self, host='https://v2api.tradesmartonline.in/NorenWClientTP/', websocket='wss://v2api.tradesmartonline.in/NorenWSTP/')
+
         global api
         api = self
     def place_basket(self, orders):
