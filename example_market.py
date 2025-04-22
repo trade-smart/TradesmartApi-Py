@@ -73,6 +73,7 @@ if ret != None:
         print('p => contract info n properties')    
         print('v => get 1 min market data')
         print('t => get today 1 min market data')
+        print('d => get daily data')
         print('o => get option chain')
         print('s => start_websocket')
         print('q => quit')
@@ -110,6 +111,13 @@ if ret != None:
                 for symbol in symbols:
                     print('{0} token is {1}'.format(symbol['tsym'], symbol['token']))
 
+        elif prompt1 == 'd':
+            exch  = 'NSE'
+            tsym = 'RELIANCE-EQ'
+            ret = api.get_daily_price_series(exchange=exch, tradingsymbol=tsym, startdate=0)
+            print(ret)
+
+        
         elif prompt1 == 'p':
             exch  = 'NSE'
             token = '22'
